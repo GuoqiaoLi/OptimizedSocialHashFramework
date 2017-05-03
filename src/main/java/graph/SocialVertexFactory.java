@@ -13,17 +13,7 @@ public abstract class SocialVertexFactory implements VertexFactory{
 
     //TODO: override the create method to create the vertex.
     public SocialVertex createVertex() {
-        return new SocialVertex() {
-            @Override
-            public List<SocialVertex> getNeighbours() {
-                return null;
-            }
-
-            @Override
-            public void addNeighbour(SocialVertex v) {
-
-            }
-        };
+        return null;
     }
 
 }
