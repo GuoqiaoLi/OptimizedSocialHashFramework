@@ -11,4 +11,9 @@ public interface SocialVertex extends Instance{
     //TODO: Implement this method to get the neighbours of a vertex.
     public List<SocialVertex> getNeighbours();
     public void addNeighbour(SocialVertex v);
+    public void addAccChanges();
+    public int getAccChanges();
+    public void resetAccChanges();
+    public int getPartition();
+    public void setPartition(int partition);
 }

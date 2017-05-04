@@ -11,7 +11,7 @@ import org.jgrapht.EdgeFactory;
 public abstract class SocialGraphEdgeFactory implements EdgeFactory {
 
     //TODO: Override this method to create an edge
-    public SocialEdge createEdges(SocialVertex source, SocialVertex target) {
+    public static SocialEdge createEdges(SocialVertex source, SocialVertex target) {
 
         return new SocialEdge() {
             @Override

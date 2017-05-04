@@ -16,26 +16,30 @@ public abstract class SocialGraph extends AbstractGraph implements Dataset {
 
     private List<SocialVertex> vertices;
     private List<SocialEdge> edges;
-    private HashMap<Integer, SocialVertex> paritions;
+    private HashMap<Integer, List<SocialVertex>> paritions;
 
     public SocialGraph() {
         super();
     }
 
-    public List getVertices(){
+    public List<SocialVertex> getVertices(){
         return this.vertices;
     }
 
-    public List getEdges() {
+    public List<SocialEdge> getEdges() {
         return this.edges;
     }
 
-    public HashMap getPartitions() {
+    public HashMap<Integer, List<SocialVertex>> getPartitions() {
         return this.paritions;
     }
 
     public List getNeighbours(SocialVertex vertex) {
         return vertex.getNeighbours();
+    }
+
+    public int getPartitionVertex(SocialVertex vertex) {
+        return vertex.getPartition();
     }
 
 }
