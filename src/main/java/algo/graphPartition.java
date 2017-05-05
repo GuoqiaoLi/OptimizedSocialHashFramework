@@ -17,24 +17,29 @@ import net.sf.javaml.clustering.KMeans;
  */
 public abstract class graphPartition {
 
-    private double alpha;//parameters for objective function
-    private double gamma;//parameters for objective function
-    private int k;//number of partitions.
-    private double threshold;// threshold to run computing skip
-    private int capacity;// the capacity of each partition
+    private static double alpha;//parameters for objective function
+    private static double gamma;//parameters for objective function
+    private static int k;//number of partitions.
+    private static double threshold;// threshold to run computing skip
+    private static int capacity;// the capacity of each partition
+    private static SocialGraph graph;// the graph withold.
 
-    public void setParameters(double alpha, double gamma, int k) {
-        this.alpha = alpha;
-        this.gamma = gamma;
-        this.k = k;
+    public static void setParameters(double a, double g, int num) {
+        alpha = a;
+        gamma = g;
+        k = num;
     }
 
-    public void setThreshold(double threshold) {
-        this.threshold = threshold;
+    public static void setGrpah(SocialGraph g) {
+        graph = g;
     }
 
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
+    public static void setThreshold(double thresh) {
+        threshold = thresh;
+    }
+
+    public static void setCapacity(int c) {
+        capacity = capacity;
     }
 
     //Initial scoring function to minimize edge cut and make the graph as balance as possible
@@ -56,7 +61,7 @@ public abstract class graphPartition {
 
     //Get the intersection of two lists.
 
-    private HashSet intersection(List neighbours, List partition) {
+    private static HashSet intersection(List neighbours, List partition) {
         HashSet<SocialVertex> result = new HashSet(neighbours);
         HashSet<SocialVertex> parti = new HashSet(partition);
         result.retainAll(parti);
@@ -65,7 +70,7 @@ public abstract class graphPartition {
 
     //Initial partition of a social graph with K-means algorithm
 
-    public HashMap<Integer, List<SocialVertex>> partition(SocialGraph graph) {
+    public static HashMap<Integer, List<SocialVertex>> partition() {
         HashMap<Integer, List<SocialVertex>> map = new HashMap<>();
         KMeans km = new KMeans(k);
         List[] datasets = km.cluster(graph);
@@ -78,13 +83,13 @@ public abstract class graphPartition {
 
     //Calculate whether to skip the
 
-    public boolean skip(SocialGraph graph, SocialVertex v) {
+    public static boolean skip(SocialGraph graph, SocialVertex v) {
         return (double)(v.getAccChanges()/intersection(v.getNeighbours(), graph.getPartitions().get(v.getPartition())).size()) > threshold;
     }
 
     //Objective function for dynamically re-partition the graph
 
-    public double objectiveFunction(SocialVertex move, SocialVertex stay, HashMap<Integer, List<SocialVertex>> partition) {
+    public static double objectiveFunction(SocialVertex move, SocialVertex stay, HashMap<Integer, List<SocialVertex>> partition) {
         List<SocialVertex> movePartition = partition.get(move.getPartition());
         int moveNeighbour = intersection(move.getNeighbours(), movePartition).size();
         double score1 = moveNeighbour * (moveNeighbour - (double)((movePartition.size()-1) / capacity));
@@ -96,7 +101,7 @@ public abstract class graphPartition {
 
     }
 
-    public HashMap<Integer, List<SocialVertex>> rePartition(SocialGraph graph, List<SocialEdge> edges, List<SocialVertex> vertices) {
+    public static HashMap<Integer, List<SocialVertex>> rePartition(List<SocialEdge> edges, List<SocialVertex> vertices) {
 
         HashMap<Integer, List<SocialVertex>> partition = graph.getPartitions();
 
@@ -136,14 +141,20 @@ public abstract class graphPartition {
                     double sourceScore = objectiveFunction(e.getTarget(), e.getSource(), partition);
                     SocialVertex toMove = (targetScore > sourceScore) ? e.getTarget() : e.getSource();
                     SocialVertex toStay = (targetScore > sourceScore) ? e.getSource() : e.getTarget();
+                    candidates.remove(toMove);
+                    candidates.remove(toStay);
                     candidates.addAll(reAssignVertex(toMove, toStay, partition));
                 } else if(candidates.contains(e.getTarget())) {
                     SocialVertex toMove = e.getTarget();
                     SocialVertex toStay = e.getSource();
+                    candidates.remove(toMove);
+                    candidates.remove(toStay);
                     candidates.addAll(reAssignVertex(toMove, toStay, partition));
                 } else if(candidates.contains(e.getSource())) {
                     SocialVertex toMove = e.getSource();
                     SocialVertex toStay = e.getTarget();
+                    candidates.remove(toMove);
+                    candidates.remove(toStay);
                     candidates.addAll(reAssignVertex(toMove, toStay, partition));
                 }
                 else {
@@ -155,7 +166,7 @@ public abstract class graphPartition {
         return graph.getPartitions();
     }
 
-    public List<SocialVertex> reAssignVertex(SocialVertex toMove,SocialVertex toStay, HashMap<Integer, List<SocialVertex>> partition) {
+    public static List<SocialVertex> reAssignVertex(SocialVertex toMove,SocialVertex toStay, HashMap<Integer, List<SocialVertex>> partition) {
         List<SocialVertex> move = partition.get(toMove.getPartition());
         List<SocialVertex> stay = partition.get(toStay.getPartition());
         move.add(toMove);
