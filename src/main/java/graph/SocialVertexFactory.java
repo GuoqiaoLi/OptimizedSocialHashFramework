@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * Created by weixin1 on 01/05/2017.
- * Implement this interface for vertices in the social graph
+ * Extend this abstract class to create vertices in the social graph
  */
 
 public abstract class SocialVertexFactory implements VertexFactory{

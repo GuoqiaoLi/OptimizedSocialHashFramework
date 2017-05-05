@@ -4,7 +4,7 @@ import org.jgrapht.EdgeFactory;
 
 /**
  * Created by weixin1 on 01/05/2017.
- * Implement this interface to
+ * Extend this abstract class to create edges for social grpah
  */
 
 

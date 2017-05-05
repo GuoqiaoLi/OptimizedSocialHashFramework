@@ -5,6 +5,7 @@ import java.util.List;
 
 /**
  * Created by weixin1 on 01/05/2017.
+ * Builder to build and modify social graph
  */
 
 
